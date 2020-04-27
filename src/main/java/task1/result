@@ -1,0 +1,297 @@
+1). Create bean A, use DI via setters, use property placeholder for values
+
+code in BeansTask1.xml file:
+
+    <bean id="beanA" class="task1.classes.A">
+        <property name="name" value="Bean-A"/>
+        <property name="id" value="01"/>
+        <property name="isChecked" value="true"/>
+    </bean>
+
+    Runner code:
+    *************************************************************************************
+    *                                                                                   *
+    *   ApplicationContext context = new ClassPathXmlApplicationContext("Beans.xml");   *
+    *                                                                                   *
+    *        A beanA= (A) context.getBean("beanA");                                     *
+    *         System.out.println(beanA.toString());                                     *
+    *                                                                                   *
+    *************************************************************************************
+
+   result in Console:
+ |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+ |                                                                                                         |
+ |   A{name='Bean-A', id=1, isChecked=true}                                                                |
+ |                                                                                                         |
+ |                                                                                                         |
+ |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+ 2). Create bean B, use DI via constructor (bean A as argument of constructor)
+
+
+code in BeansTask1.xml file:
+
+    <bean id="beanA" class="task1.classes.A">
+        <property name="name" value="Bean-A"/>
+        <property name="id" value="1"/>
+        <property name="isChecked" value="true"/>
+    </bean>
+
+    <bean id="beanB" class="task1.classes.B">
+        <constructor-arg name="name" value="Bean-B"/>
+        <constructor-arg name="id" value="2"/>
+        <constructor-arg name="isChecked" value="true"/>
+        <constructor-arg name="parentBean" ref="beanA"/>
+    </bean>
+
+     Runner code:
+     *****************************************************************************************
+     *                                                                                       *
+     *  ApplicationContext context = new ClassPathXmlApplicationContext("BeansTask1.xml");   *
+     *                                                                                       *
+     *        A beanA= (A) context.getBean("beanA");                                         *
+     *        B beanB= (B) context.getBean("beanB");                                         *
+     *        System.out.println(beanA);                                                     *
+     *        System.out.println(beanB);                                                     *
+     *                                                                                       *
+     *****************************************************************************************
+
+     result in Console:
+     |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+     |                                                                                                         |
+     |   A{name='Bean-A', id=1, isChecked=true}                                                                |
+     |   B{name='Bean-B', id=2, isChecked=true, parentBean=A{name='Bean-A', id=1, isChecked=true}}             |                                               |
+     |                                                                                                         |
+     |                                                                                                         |
+     |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+3). Create bean C with singleton scope and bean D with prototype scope. Add bean D as property of bean C.
+
+code in BeansTask1.xml file:
+
+    <bean id="beanC_1" scope="singleton" class="task1.classes.C">
+        <property name="name" value="Bean-С-1"/>
+        <property name="id" value="3"/>
+        <property name="isChecked" value="true"/>
+        <property name="child" ref="beanD"/>
+    </bean>
+
+    <bean id="beanC_2" scope="singleton" class="task1.classes.C">
+        <property name="name" value="Bean-С-2"/>
+        <property name="id" value="4"/>
+        <property name="isChecked" value="true"/>
+        <property name="child" ref="beanD"/>
+    </bean>
+
+    <bean id="beanD" scope="prototype" class="task1.classes.D">
+        <property name="name" value="Bean-D"/>
+        <property name="id" value="5"/>
+        <property name="isChecked" value="false"/>
+    </bean>
+
+
+ Runner code:
+      *****************************************************************************************
+      *                                                                                       *
+      *  ApplicationContext context = new ClassPathXmlApplicationContext("BeansTask1.xml");   *
+      *                                                                                       *
+      *          C beanC1= (C) context.getBean("beanC_1");                                    *
+      *          C beanC2= (C) context.getBean("beanC_2");                                    *
+      *          D beanD= (D) context.getBean("beanD");                                       *
+      *          System.out.println(beanC1);                                                  *
+      *          System.out.println(beanC2);                                                  *
+      *          System.out.println(beanD);                                                   *
+      *                                                                                       *
+      *****************************************************************************************
+
+
+ result in Console:
+     |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+     |                                                                                                         |
+     |  C{name='Bean-С-1', id=3, isChecked=true, child=D{name='Bean-D', id=5, isChecked=false}}                |
+     |  C{name='Bean-С-2', id=4, isChecked=true, child=D{name='Bean-D', id=5, isChecked=false}}                |
+     |  D{name='Bean-D', id=5, isChecked=false}                                                                |
+     |                                                                                                         |
+     |                                                                                                         |
+     |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+
+
+4). Create bean E and replace logic of one of its method by Method Replacement
+
+code in BeansTask1.xml file:
+
+    <bean id="replacerId" class="task1.classes.E" />
+
+    <bean id="BeanE" class="task1.classes.E">
+        <replaced-method name="say" replacer="replacerId" />
+    </bean>
+
+ class E:
+      *****************************************************************************************************
+      *                                                                                                   *
+      * public class E  implements MethodReplacer {                                                       *
+      *                                                                                                   *
+      *      public void say(){                                                                           *
+      *          System.out.println("Method say()");                                                      *
+      *       }                                                                                           *
+      *      public void work(){                                                                          *
+      *          System.out.println("Method work()");                                                     *
+      *      }                                                                                            *
+      *                                                                                                   *
+      *      @Override                                                                                    *
+      *      public Object reimplement(Object o, Method method, Object[] objects) throws Throwable {      *
+      *          System.out.println("Method Replacement say()");                                          *
+      *          return o;                                                                                *
+      *      }                                                                                            *
+      * }                                                                                                 *
+      *                                                                                                   *
+      *****************************************************************************************************
+
+ Runner code:
+       *****************************************************************************************
+       *                                                                                       *
+       *  ApplicationContext context = new ClassPathXmlApplicationContext("BeansTask1.xml");   *
+       *                                                                                       *
+       *          E beanE= (E) context.getBean("BeanE");                                       *
+       *          beanE.work();                                                                *
+       *          beanE.say();                                                                 *
+       *                                                                                       *
+       *****************************************************************************************
+
+  result in Console:
+      |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+      |                                                                                                         |
+      |         Method work()                                                                                   |
+      |         Method Replacement say()                                                                        |
+      |                                                                                                         |
+      |                                                                                                         |
+      |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+5). Create bean F and log all possible steps from its lifecycle (lifecycle of Spring bean).
+
+code in BeansTask1.xml file:
+
+    <bean id="BeanF" class="task1.classes.F" init-method="initMethod" destroy-method="destroyMethod">
+        <constructor-arg value="Bean-F"/>
+        <constructor-arg value="6"/>
+    </bean>
+
+    <bean id="bpp" class="task1.classes.CustomBPP"/>
+
+
+class F:
+    **********************************************************************************
+    *                                                                                *
+    *  public class F {                                                              *
+    *      private String name;                                                      *
+    *      private int id;                                                           *
+    *                                                                                *
+    *      public F() {                                                              *
+    *      }                                                                         *
+    *                                                                                *
+    *      public F(String name, int id) {                                           *
+    *          this.name = name;                                                     *
+    *          this.id = id;                                                         *
+    *          System.out.println("Constructor of class F");                         *
+    *      }                                                                         *
+    *                                                                                *
+    *                                                                                *
+    *      public void initMethod(){                                                 *
+    *          System.out.println("Init-method doing");                              *
+    *      }                                                                         *
+    *                                                                                *
+    *      public void destroyMethod(){                                              *
+    *          System.out.println("destroy-method doing");                           *
+    *      }                                                                         *
+    *                                                                                *
+    *      public String getName() {                                                 *
+    *          return name;                                                          *
+    *      }                                                                         *
+    *                                                                                *
+    *      public void setName(String name) {                                        *
+    *          this.name = name;                                                     *
+    *      }                                                                         *
+    *                                                                                *
+    *      public int getId() {                                                      *
+    *          return id;                                                            *
+    *      }                                                                         *
+    *                                                                                *
+    *      public void setId(int id) {                                               *
+    *          this.id = id;                                                         *
+    *      }                                                                         *
+    *                                                                                *
+    *      @Override                                                                 *
+    *      public boolean equals(Object o) {                                         *
+    *          if (this == o) return true;                                           *
+    *          if (o == null || getClass() != o.getClass()) return false;            *
+    *          F f = (F) o;                                                          *
+    *          return id == f.id &&                                                  *
+    *                  Objects.equals(name, f.name);                                 *
+    *      }                                                                         *
+    *                                                                                *
+    *      @Override                                                                 *
+    *      public int hashCode() {                                                   *
+    *          return Objects.hash(name, id);                                        *
+    *      }                                                                         *
+    *                                                                                *
+    *      @Override                                                                 *
+    *      public String toString() {                                                *
+    *          return "F{" +                                                         *
+    *                  "name='" + name + '\'' +                                      *
+    *                  ", id=" + id +                                                *
+    *                  '}';                                                          *
+    *      }                                                                         *
+    *  }                                                                             *
+    *                                                                                *
+    **********************************************************************************
+
+
+ class CustomBPP:
+      *****************************************************************************************************
+      *                                                                                                   *
+      *                                                                                                   *
+      *    public class CustomBPP implements BeanPostProcessor {                                          *
+      *                                                                                                   *
+      *        @Override                                                                                  *
+      *        public Object postProcessBeforeInitialization(Object o, String s) throws BeansException {  *
+      *            System.out.println("BeanPostProcessor " + s + " START");                               *
+      *            return o;                                                                              *
+      *        }                                                                                          *
+      *                                                                                                   *
+      *        @Override                                                                                  *
+      *        public Object postProcessAfterInitialization(Object o, String s) throws BeansException {   *
+      *            System.out.println("BeanPostProcessor " + s + " END");                                 *
+      *            return o;                                                                              *
+      *        }                                                                                          *
+      *    }                                                                                              *
+      *                                                                                                   *
+      *****************************************************************************************************
+
+
+ Runner code:
+       *****************************************************************************************
+       *                                                                                       *
+       *  ApplicationContext context = new ClassPathXmlApplicationContext("BeansTask1.xml");   *
+       *                                                                                       *
+       *        F beanF= (F) context.getBean("BeanF");                                         *
+       *         System.out.println(beanF.toString());                                         *
+       *         ((AbstractApplicationContext) context).close();                               *                                                     *
+       *                                                                                       *
+       *****************************************************************************************
+
+  result in Console:
+      |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+      |                                                                                                         |
+      |        Constructor of class F                                                                           |
+      |        BeanPostProcessor BeanF START                                                                    |
+      |        Init-method doing                                                                                |
+      |        BeanPostProcessor BeanF END                                                                      |
+      |        F{name='Bean-F', id=6}                                                                           |
+      |        destroy-method doing                                                                             |
+      |                                                                                                         |
+      |                                                                                                         |
+      |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
