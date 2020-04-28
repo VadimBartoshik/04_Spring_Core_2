@@ -1,0 +1,226 @@
+Implement bean that sends message to log at initialization and destroy phases,
+Make custom Bean Postprocessor, Inject list
+
+code in BeanTask2.xml file:
+
+ <bean id="bpp" class="task2.CustomBPP"/>
+
+    <bean id="vadim" class="task2.classes.Employee" init-method="initEmployee" destroy-method="destroyMethod">
+        <constructor-arg name="name" value="Vadim"/>
+        <constructor-arg name="age" value="18"/>
+    </bean>
+
+    <bean id="ivan" class="task2.classes.Employee">
+        <constructor-arg name="name" value="Ivan"/>
+        <constructor-arg name="age" value="19"/>
+    </bean>
+
+    <bean id="marina" class="task2.classes.Employee">
+        <constructor-arg name="name" value="Marina"/>
+        <constructor-arg name="age" value="21"/>
+    </bean>
+
+    <bean id="dasha" class="task2.classes.Employee">
+        <constructor-arg name="name" value="Dasha"/>
+        <constructor-arg name="age" value="20"/>
+    </bean>
+
+    <bean id="anna" class="task2.classes.Employee">
+        <constructor-arg name="name" value="Anna"/>
+        <constructor-arg name="age" value="22"/>
+    </bean>
+
+    <bean id="alex" class="task2.classes.Employee">
+        <property name="name" value="Alex"/>
+        <property name="age" value="25"/>
+    </bean>
+
+
+    <bean id="worker" class="task2.classes.Position">
+        <constructor-arg name="positionName" value="worker"/>
+        <constructor-arg name="salary" value="700"/>
+        <constructor-arg name="countPlace" value="3"/>
+        <constructor-arg name="employeeList">
+            <list>
+                <ref bean="vadim"/>
+                <ref bean="ivan"/>
+                <ref bean="marina"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="director" class="task2.classes.Position">
+        <constructor-arg name="positionName" value="director"/>
+        <constructor-arg name="salary" value="1000"/>
+        <constructor-arg name="countPlace" value="1"/>
+        <constructor-arg name="employeeList">
+            <list>
+                <ref bean="alex"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="secretary" class="task2.classes.Position">
+        <constructor-arg name="positionName" value="secretary"/>
+        <constructor-arg name="salary" value="500"/>
+        <constructor-arg name="countPlace" value="2"/>
+        <constructor-arg name="employeeList">
+            <list>
+                <ref bean="dasha"/>
+                <ref bean="anna"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+class Employee:
+    ****************************************************************************************
+    *                                                                                      *
+    *  public class Employee {                                                             *
+    *       private String name;                                                           *
+    *       private int age;                                                               *
+    *                                                                                      *
+    *       public Employee() {                                                            *
+    *       }                                                                              *
+    *                                                                                      *
+    *       public Employee(String name, int age) {                                        *
+    *           this.name = name;                                                          *
+    *           this.age = age;                                                            *
+    *       }                                                                              *
+    *                                                                                      *
+    *       public void initEmployee() {                                                   *
+    *           System.out.println("Init-method: name=" + this.name + " age= " + this.age);*
+    *       }                                                                              *
+    *       public void destroyMethod(){                                                   *
+    *           System.out.println("destroy-method doing");                                *
+    *       }                                                                              *
+    *                                                                                      *
+    *       public String getName() {                                                      *
+    *           return name;                                                               *
+    *       }                                                                              *
+    *                                                                                      *
+    *       public void setName(String name) {                                             *
+    *           this.name = name;                                                          *
+    *       }                                                                              *
+    *                                                                                      *
+    *       public int getAge() {                                                          *
+    *           return age;                                                                *
+    *       }                                                                              *
+    *                                                                                      *
+    *       public void setAge(int age) {                                                  *
+    *           this.age = age;                                                            *
+    *       }                                                                              *
+    *                                                                                      *
+    *                                                                                      *
+    *       @Override                                                                      *
+    *       public boolean equals(Object o) {                                              *
+    *           if (this == o) return true;                                                *
+    *           if (o == null || getClass() != o.getClass()) return false;                 *
+    *           Employee employee = (Employee) o;                                          *
+    *           return age == employee.age &&                                              *
+    *                   Objects.equals(name, employee.name);                               *
+    *       }                                                                              *
+    *                                                                                      *
+    *       @Override                                                                      *
+    *       public int hashCode() {                                                        *
+    *           return Objects.hash(name, age);                                            *
+    *       }                                                                              *
+    *                                                                                      *
+    *       @Override                                                                      *
+    *       public String toString() {                                                     *
+    *           return "Employee{" +                                                       *
+    *                   "name='" + name + '\'' +                                           *
+    *                   ", age=" + age +                                                   *
+    *                   '}';                                                               *
+    *       }                                                                              *
+    *                                                                                      *
+    ****************************************************************************************
+
+ class CustomBPP:
+      *****************************************************************************************************
+      *                                                                                                   *
+      *                                                                                                   *
+      *    public class CustomBPP implements BeanPostProcessor {                                          *
+      *                                                                                                   *
+      *        @Override                                                                                  *
+      *        public Object postProcessBeforeInitialization(Object o, String s) throws BeansException {  *
+      *            System.out.println("BeanPostProcessor " + s + " START");                               *
+      *            return o;                                                                              *
+      *        }                                                                                          *
+      *                                                                                                   *
+      *        @Override                                                                                  *
+      *        public Object postProcessAfterInitialization(Object o, String s) throws BeansException {   *
+      *            System.out.println("BeanPostProcessor " + s + " END");                                 *
+      *            return o;                                                                              *
+      *        }                                                                                          *
+      *    }                                                                                              *
+      *                                                                                                   *
+      *****************************************************************************************************
+
+
+       Runner code:
+       *****************************************************************************************
+       *                                                                                       *
+       *   ApplicationContext context = new ClassPathXmlApplicationContext("BeanTask2.xml");   *
+       *                                                                                       *
+       *           Position worker = (Position) context.getBean("worker");                     *
+       *           Position director = (Position) context.getBean("director");                 *
+       *           Position secretary = (Position) context.getBean("secretary");               *
+       *                                                                                       *
+       *           Employee vadim = (Employee) context.getBean("vadim");                       *
+       *           Employee ivan = (Employee) context.getBean("ivan");                         *
+       *           Employee marina = (Employee) context.getBean("marina");                     *
+       *           Employee dasha = (Employee) context.getBean("dasha");                       *
+       *           Employee anna = (Employee) context.getBean("anna");                         *
+       *           Employee alex = (Employee) context.getBean("alex");                         *
+       *                                                                                       *
+       *           System.out.println(worker.toString());                                      *
+       *           System.out.println(director.toString());                                    *
+       *           System.out.println(secretary.toString());                                   *
+       *           System.out.println("********************");                                 *
+       *           System.out.println(vadim.toString());                                       *
+       *           System.out.println(ivan.toString());                                        *
+       *           System.out.println(marina.toString());                                      *
+       *           System.out.println(dasha.toString());                                       *
+       *           System.out.println(anna.toString());                                        *
+       *           System.out.println(alex.toString());                                        *
+       *           ((AbstractApplicationContext) context).close();                             *                                                     *
+       *                                                                                       *
+       *****************************************************************************************
+
+  result in Console:
+      |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+      |                                                                                                                                                                                         |
+      |        Bean PostProcessor vadim Start                                                                                                                                                   |
+      |        Init-method: name=Vadim age= 18                                                                                                                                                  |
+      |        Bean PostProcessor vadim End                                                                                                                                                     |
+      |        Bean PostProcessor ivan Start                                                                                                                                                    |
+      |        Bean PostProcessor ivan End                                                                                                                                                      |
+      |        Bean PostProcessor marina Start                                                                                                                                                  |
+      |        Bean PostProcessor marina End                                                                                                                                                    |
+      |        Bean PostProcessor dasha Start                                                                                                                                                   |
+      |        Bean PostProcessor dasha End                                                                                                                                                     |
+      |        Bean PostProcessor anna Start                                                                                                                                                    |
+      |        Bean PostProcessor anna End                                                                                                                                                      |
+      |        Bean PostProcessor alex Start                                                                                                                                                    |
+      |        Bean PostProcessor alex End                                                                                                                                                      |
+      |        Bean PostProcessor worker Start                                                                                                                                                  |
+      |        Bean PostProcessor worker End                                                                                                                                                    |
+      |        Bean PostProcessor director Start                                                                                                                                                |
+      |        Bean PostProcessor director End                                                                                                                                                  |
+      |        Bean PostProcessor secretary Start                                                                                                                                               |
+      |        Bean PostProcessor secretary End                                                                                                                                                 |
+      |        Position{positionName='worker', salary=700, countPlace=3, employeeList=[Employee{name='Vadim', age=18}, Employee{name='Ivan', age=19}, Employee{name='Marina', age=21}]}         |
+      |        Position{positionName='director', salary=1000, countPlace=1, employeeList=[Employee{name='Alex', age=25}]}                                                                       |
+      |        Position{positionName='secretary', salary=500, countPlace=2, employeeList=[Employee{name='Dasha', age=20}, Employee{name='Anna', age=22}]}                                       |
+      |        ********************                                                                                                                                                             |
+      |        Employee{name='Vadim', age=18}                                                                                                                                                   |
+      |        Employee{name='Ivan', age=19}                                                                                                                                                    |
+      |        Employee{name='Marina', age=21}                                                                                                                                                  |
+      |        Employee{name='Dasha', age=20}                                                                                                                                                   |
+      |        Employee{name='Anna', age=22}                                                                                                                                                    |
+      |        Employee{name='Alex', age=25}                                                                                                                                                    |
+      |        destroy-method doing                                                                                                                                                             |
+      |                                                                                                                                                                                         |
+      |                                                                                                                                                                                         |
+      |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||

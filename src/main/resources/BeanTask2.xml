@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+    <bean id="bpp" class="task2.CustomBPP"/>
+
+    <bean id="vadim" class="task2.classes.Employee" init-method="initEmployee" destroy-method="destroyMethod">
+        <constructor-arg name="name" value="Vadim"/>
+        <constructor-arg name="age" value="18"/>
+    </bean>
+
+    <bean id="ivan" class="task2.classes.Employee">
+        <constructor-arg name="name" value="Ivan"/>
+        <constructor-arg name="age" value="19"/>
+    </bean>
+
+    <bean id="marina" class="task2.classes.Employee">
+        <constructor-arg name="name" value="Marina"/>
+        <constructor-arg name="age" value="21"/>
+    </bean>
+
+    <bean id="dasha" class="task2.classes.Employee">
+        <constructor-arg name="name" value="Dasha"/>
+        <constructor-arg name="age" value="20"/>
+    </bean>
+
+    <bean id="anna" class="task2.classes.Employee">
+        <constructor-arg name="name" value="Anna"/>
+        <constructor-arg name="age" value="22"/>
+    </bean>
+
+    <bean id="alex" class="task2.classes.Employee">
+        <property name="name" value="Alex"/>
+        <property name="age" value="25"/>
+    </bean>
+
+
+    <bean id="worker" class="task2.classes.Position">
+        <constructor-arg name="positionName" value="worker"/>
+        <constructor-arg name="salary" value="700"/>
+        <constructor-arg name="countPlace" value="3"/>
+        <constructor-arg name="employeeList">
+            <list>
+                <ref bean="vadim"/>
+                <ref bean="ivan"/>
+                <ref bean="marina"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="director" class="task2.classes.Position">
+        <constructor-arg name="positionName" value="director"/>
+        <constructor-arg name="salary" value="1000"/>
+        <constructor-arg name="countPlace" value="1"/>
+        <constructor-arg name="employeeList">
+            <list>
+                <ref bean="alex"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+
+    <bean id="secretary" class="task2.classes.Position">
+        <constructor-arg name="positionName" value="secretary"/>
+        <constructor-arg name="salary" value="500"/>
+        <constructor-arg name="countPlace" value="2"/>
+        <constructor-arg name="employeeList">
+            <list>
+                <ref bean="dasha"/>
+                <ref bean="anna"/>
+            </list>
+        </constructor-arg>
+    </bean>
+
+</beans>

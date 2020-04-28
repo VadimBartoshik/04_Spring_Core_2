@@ -8,45 +8,45 @@
            http://www.springframework.org/schema/context
            http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <!--<bean id="beanA" class="task1.classes.A">-->
-        <!--<property name="name" value="Bean-A"/>-->
-        <!--<property name="id" value="1"/>-->
-        <!--<property name="isChecked" value="true"/>-->
-    <!--</bean>-->
-<!---->
-    <!--<bean id="beanB" class="task1.classes.B">-->
-        <!--<constructor-arg name="name" value="Bean-B"/>-->
-        <!--<constructor-arg name="id" value="2"/>-->
-        <!--<constructor-arg name="isChecked" value="true"/>-->
-        <!--<constructor-arg name="parentBean" ref="beanA"/>-->
-    <!--</bean>-->
-<!---->
-    <!--<bean id="beanC_1" scope="singleton" class="task1.classes.C">-->
-        <!--<property name="name" value="Bean-С-1"/>-->
-        <!--<property name="id" value="3"/>-->
-        <!--<property name="isChecked" value="true"/>-->
-        <!--<property name="child" ref="beanD"/>-->
-    <!--</bean>-->
-<!---->
-    <!--<bean id="beanC_2" scope="singleton" class="task1.classes.C">-->
-        <!--<property name="name" value="Bean-С-2"/>-->
-        <!--<property name="id" value="4"/>-->
-        <!--<property name="isChecked" value="true"/>-->
-        <!--<property name="child" ref="beanD"/>-->
-    <!--</bean>-->
-<!---->
-    <!--<bean id="beanD" scope="prototype" class="task1.classes.D">-->
-        <!--<property name="name" value="Bean-D"/>-->
-        <!--<property name="id" value="5"/>-->
-        <!--<property name="isChecked" value="false"/>-->
-    <!--</bean>-->
-<!---->
-<!---->
-    <!--<bean id="replacerId" class="task1.classes.E"/>-->
-<!---->
-    <!--<bean id="BeanE" class="task1.classes.E">-->
-        <!--<replaced-method name="say" replacer="replacerId"/>-->
-    <!--</bean>-->
+    <bean id="beanA" class="task1.classes.A">
+        <property name="name" value="Bean-A"/>
+        <property name="id" value="1"/>
+        <property name="isChecked" value="true"/>
+    </bean>
+
+    <bean id="beanB" class="task1.classes.B">
+        <constructor-arg name="name" value="Bean-B"/>
+        <constructor-arg name="id" value="2"/>
+        <constructor-arg name="isChecked" value="true"/>
+        <constructor-arg name="parentBean" ref="beanA"/>
+    </bean>
+
+    <bean id="beanC_1" scope="singleton" class="task1.classes.C">
+        <property name="name" value="Bean-С-1"/>
+        <property name="id" value="3"/>
+        <property name="isChecked" value="true"/>
+        <property name="child" ref="beanD"/>
+    </bean>
+
+    <bean id="beanC_2" scope="singleton" class="task1.classes.C">
+        <property name="name" value="Bean-С-2"/>
+        <property name="id" value="4"/>
+        <property name="isChecked" value="true"/>
+        <property name="child" ref="beanD"/>
+    </bean>
+
+    <bean id="beanD" scope="prototype" class="task1.classes.D">
+        <property name="name" value="Bean-D"/>
+        <property name="id" value="5"/>
+        <property name="isChecked" value="false"/>
+    </bean>
+
+
+    <bean id="replacerId" class="task1.classes.E"/>
+
+    <bean id="BeanE" class="task1.classes.E">
+        <replaced-method name="say" replacer="replacerId"/>
+    </bean>
 
     <bean id="BeanF" class="task1.classes.F" init-method="initMethod" destroy-method="destroyMethod">
         <constructor-arg value="Bean-F"/>
